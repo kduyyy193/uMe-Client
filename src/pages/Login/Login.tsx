@@ -2,24 +2,29 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RHFTextField } from "components/Form";
 import { useNavigate } from "react-router-dom";
-import { Button, App, Alert } from "antd";
-import { REGEX_EMAIL } from "configs/auth";
+import { Button, App } from "antd";
 import Page from "components/Page";
-import ForgotPassword from "./components/ForgotPassword";
+import LogoImg from "assets/images/LOGO.png";
 import cn from "utils/cn";
+import AuthService from "services/auth";
+import useAsync from "hooks/useAsync";
+import { TokenResponse } from "services/auth/types";
+import { ApiResponse } from "services/types";
+import { useStateContext } from "contexts/ContextProvider";
 
 type FormInputs = {
-  email: string;
+  username: string;
   password: string;
 };
 
 const Login = () => {
   const navigate = useNavigate();
-
   const { message } = App.useApp();
+  const { setToken, setUser } = useStateContext();
+
+  const loginAPI = useAsync<ApiResponse<TokenResponse>>(AuthService.login);
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
 
   const {
     control,
@@ -29,16 +34,25 @@ const Login = () => {
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
   const onSubmit = async (data: FormInputs) => {
-    if (data.email === "admin@gmail.com" && data.password === "admin123") {
-      navigate("/auth/two-factor-login");
-    } else {
+    try {
+      const { username, password } = data;
+      const response = await loginAPI.run({ username, password });
+      if (response?.data) {
+        console.log(response.data.user);
+        setUser(response.data.user);
+        setToken(response.data?.token);
+        navigate("/");
+        return;
+      }
       message.error("Incorrect email or password!");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -46,47 +60,26 @@ const Login = () => {
     setShowPassword((preVal) => !preVal);
   };
 
-  const toggleModal = () => {
-    setOpen((preVal) => !preVal);
-  };
-
   return (
-    <Page title="EatRight - Login">
-      <div className="mt-40">
-        <ForgotPassword open={open} handleClose={toggleModal} />
-        <div className="w-full max-w-[540px]">
-          <p className="text-12 leading-14.5 font-bold text-dark-light">Sign In</p>
-          <p className="mt-2.5 text-4 leading-5.5 font-normal">
-            If you have an account, sign in with your email address.
-          </p>
-          <div className="mt-4">
-            <Alert
-              message={
-                <p>
-                  Use <span className="font-bold">admin@gmail.com</span> with password{" "}
-                  <span className="font-bold">admin123</span>
-                </p>
-              }
-              type="info"
-              showIcon
-            />
+    <Page title="uMe - Login">
+      <div className="p-4">
+        <div className="w-full max-w-[540px] mx-auto">
+          <div>
+            <img className="mx-auto" src={LogoImg} alt="LOGO" />
           </div>
+          <p className="text-3xl font-bold w-full mb-4">Sign In</p>
           <div className="mt-4">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-12 gap-y-5">
                 <div className="col-span-12">
                   <RHFTextField
                     control={control}
-                    name={"email"}
-                    label="Email"
-                    placeholder="Email"
+                    name={"username"}
+                    label="Username"
+                    placeholder="Username"
                     moreclass="h-12.5 text-4 leading-5.5"
                     rules={{
                       required: "This is a required field!",
-                      pattern: {
-                        value: REGEX_EMAIL,
-                        message: "Please enter a valid email address!",
-                      },
                     }}
                   />
                 </div>
@@ -124,11 +117,6 @@ const Login = () => {
                       onClick={handleSubmit(onSubmit)}
                     >
                       Sign In
-                    </Button>
-                    <Button className="w-full" type="text" size="large" onClick={toggleModal}>
-                      <p className="text-left text-4 leading-4.75 font-semibold text-tertiary">
-                        Forgot Password?
-                      </p>
                     </Button>
                   </div>
                 </div>

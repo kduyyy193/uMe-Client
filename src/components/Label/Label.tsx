@@ -11,7 +11,7 @@ const Label: React.FC<IProps> = ({ htmlFor, title, more, required = true }) => {
     <div className="pb-1.5">
       <label
         className={cn(
-          "text-base font-medium text-secondary",
+          "text-md font-medium text-secondary",
           required && "after:content-['*'] after:text-error"
         )}
         htmlFor={htmlFor}

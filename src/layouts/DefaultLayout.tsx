@@ -2,43 +2,53 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import Header from "./Header";
 import Footer from "./Footer";
-import Menu from "./Menu";
 
-import logo from "assets/svg/logo.svg";
-import { token } from "services/axios-client";
+import { useStateContext } from "contexts/ContextProvider";
+import { Drawer } from "antd";
+import LeftMenu from "./components/LeftMenu";
+import { useState } from "react";
 
 const DefaultLayout = () => {
-  if (!token) return <Navigate to="booking" />;
+  const { token } = useStateContext();
+  const [openDrawerMenu, setOpenDrawerMenu] = useState(false);
+
+  const handleCloseDrawer = () => setOpenDrawerMenu(false);
+  const handleOpenDrawer = () => setOpenDrawerMenu(true);
+
+  if (!token) return <Navigate to="/auth/login" />;
 
   return (
-    <div id="defaultLayout">
-      <main>
-        <div className="leading-10" />
-        <Header />
-        <div className="flex items-center justify-between text-gray-800 hover:text-gray-500 h-20 fixed top-0 left-0 px-5 font-bold transition-all duration-300 ease-in-out z-10">
-          <div>
-            <a href="/" className="flex items-center">
-              <img className="w-10" src={logo} alt="" />
-              <div
-                id="nameApplication"
-                className="transition-all duration-300 ease-in-out absolute left-16 w-48 overflow-ellipsis overflow-hidden ml-2"
-              >
-                Admin
-              </div>
-            </a>
+    <div className="w-full h-full min-h-screen">
+      <Header
+        openDrawer={handleOpenDrawer}
+        closeDrawer={handleCloseDrawer}
+        openDrawerMenu={openDrawerMenu}
+      />
+      <div className="pt-[60px] lg:pt-[81px] w-full min-h-full flex flex-row h-full">
+        <div className="block h-auto min-h-full lg:hidden">
+          <Drawer
+            rootClassName="customer-menu-drawer"
+            placement="left"
+            closable={false}
+            open={openDrawerMenu}
+            width={"80%"}
+            onClose={handleCloseDrawer}
+          >
+            <LeftMenu />
+          </Drawer>
+        </div>
+        <div className="hidden h-auto min-h-full lg:block">
+          <LeftMenu />
+        </div>
+        <div className="w-full h-full lg:w-[calc(100%-308px)] min-h-full bg-[#fafafa]">
+          <div className="h-full overflow-y-auto">
+            <div className="min-h-[calc(100%-80px)] sm:min-h-[calc(100%-70px)]">
+              <Outlet />
+            </div>
+            <Footer />
           </div>
         </div>
-        <Menu />
-        <section
-          id="main"
-          className={
-            "flex flex-col px-5 transition-all duration-300 ease-in-out z-10 h-[calc(100vh-5rem)] relative"
-          }
-        >
-          <Outlet />
-          <Footer />
-        </section>
-      </main>
+      </div>
     </div>
   );
 };

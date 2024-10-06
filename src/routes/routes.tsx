@@ -1,13 +1,12 @@
 import Fallback from "components/Fallback";
 import DefaultLayout from "layouts/DefaultLayout";
 import GuestLayout from "layouts/GuestLayout";
-import Booking from "pages/Booking";
-import Notfound from "pages/NotFound";
-import User from "pages/User";
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
 const Login = lazy(() => import("pages/Login"));
+const Notfound = lazy(() => import("pages/NotFound"));
+const User = lazy(() => import("pages/User"));
 
 interface IRoute {
   id: string;
@@ -20,14 +19,9 @@ interface IRoute {
 const ROUTES: IRoute[] = [
   {
     id: "a1312acc-fd64-49a9-ad60-500cbd69836e",
-    path: "/",
+    path: "/auth",
     element: <GuestLayout />,
     children: [
-      {
-        id: "b9e86a11-665f-47dd-90b5-eb6d1074b7c4",
-        path: "/",
-        element: <Booking />,
-      },
       {
         id: "b9e86a11-665f-47dd-90b5-eb6d1074b7c6",
         path: "login",

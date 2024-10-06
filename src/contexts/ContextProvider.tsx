@@ -1,18 +1,19 @@
 import { ReactNode, createContext, useContext, useState } from "react";
 
-import { IUser } from "interfaces/IUser";
 import { KEY_TOKEN, KEY_USER } from "configs/auth";
+import { getCookie, removeCookie, setCookie } from "react-use-cookie";
+import { TUserResponse } from "services/auth/types";
 
 type IContextProps = {
-  user: IUser;
+  user: TUserResponse | null;
   token: string | null;
   setToken: (token: string | null) => void;
-  setUser: (user: IUser) => void;
+  setUser: (user: TUserResponse | null) => void;
   logout: () => void;
 };
 
 const StateContext = createContext<IContextProps>({
-  user: {},
+  user: null,
   token: null,
   setToken: () => {
     //
@@ -30,20 +31,30 @@ type ContextProviderProps = {
 };
 
 export const ContextProvider = ({ children }: ContextProviderProps) => {
-  const [user, setUser] = useState<IUser>({});
-  const [token, setToken] = useState(localStorage.getItem(KEY_TOKEN));
+  const [user, setUser] = useState<TUserResponse | null>(
+    JSON.parse(localStorage.getItem(KEY_USER) || "{}")
+  );
+  const [token, setToken] = useState(getCookie(KEY_TOKEN));
 
   const _setToken = (token: string | null) => {
     if (token) {
       setToken(token);
-      localStorage.setItem(KEY_TOKEN, token);
+      setCookie(KEY_TOKEN, token);
+    }
+  };
+
+  const _setUser = (user: TUserResponse | null) => {
+    console.log(user);
+    if (user) {
+      setUser(user);
+      localStorage.setItem(KEY_USER, JSON.stringify(user));
     }
   };
 
   const logout = () => {
-    setUser({});
-    setToken(null);
-    localStorage.removeItem(KEY_TOKEN);
+    setUser(null);
+    setToken("");
+    removeCookie(KEY_TOKEN);
     localStorage.removeItem(KEY_USER);
   };
 
@@ -52,7 +63,7 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
       value={{
         user,
         token,
-        setUser,
+        setUser: _setUser,
         setToken: _setToken,
         logout,
       }}

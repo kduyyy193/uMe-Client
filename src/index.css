@@ -14,7 +14,7 @@
     --text-dark-light: #31343d;
     --text-dark: #363636;
     --text-darker: #333333;
-    --text-light-dark: #555555;
+    --text-light-dark: #2d2d2d;
     --text-info: #3b82f6;
     --text-invoice: #242424;
     --text-survey: #393939;
@@ -54,8 +54,8 @@
     --bg-silver-gray: #bdbdbd;
     --bg-light-smoke: #f5f6f6;
 
-    --border-primary: #00abc5;
-    --border-tertiary: #0a69ad;
+    --border-primary: #8a81f6;
+    --border-tertiary: #8a81f6;
     --border-error: #ea4335;
     --border-success-dark: #2ac267;
     --border-info: #4096ff;
@@ -68,7 +68,7 @@
     --border-pale-gray: #ededed;
     --border-moonstone: #dfdfdf;
 
-    --gradient-primary: #00abc5;
+    --gradient-primary: #8a81f6;
     --gradient-secondary: #5b89b5;
   }
 }
