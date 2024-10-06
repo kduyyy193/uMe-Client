@@ -1,0 +1,21 @@
+.ant-table-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px #ffffff;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+.ant-table-body::-webkit-scrollbar {
+    width: 0px;
+    height: 5px;
+    background-color: transparent;
+}
+
+.ant-table-body::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+.ant-table-body:hover::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 3px #dfdfdf;
+    background-color: #555;
+}

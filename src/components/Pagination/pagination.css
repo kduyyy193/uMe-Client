@@ -1,0 +1,21 @@
+.pagination-item a {
+    color: #363636;
+}
+
+.pagination-item.active_link a {
+    color: white !important;
+}
+
+.previous-item {
+    height: 29px;
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+}
+
+.next-item {
+    height: 29px;
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+}

@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --text-primary: #1D2433;
+    --text-seconday: #4A505C;
+    --text-tertiary: #FFF2F0;
+    --text-tertiary-dark: #003e6b;
+    --text-error: #ea4335;
+    --text-success-dark: #2ac267;
+    --text-success-darker: #34a853;
+    --text-dark-light: #31343d;
+    --text-dark: #363636;
+    --text-darker: #333333;
+    --text-light-dark: #555555;
+    --text-info: #3b82f6;
+    --text-invoice: #242424;
+    --text-survey: #393939;
+    --text-promotion: #767676;
+    --text-campaign: #484848;
+    --text-title: #525252;
+    --text-login-title: #414141;
+    --text-merchant-name: #767676;
+    --text-urban-gray: #afafaf;
+    --text-silver-gray: #bdbdbd;
+    --text-price-range: #4f4f4f;
+
+    --bg-primary: #FF3B42;
+    --bg-tertiary: #FFF2F0;
+    --bg-red: #E02D3C;
+    --bg-field: #EAECF0;
+    --bg-tertiary-dark: #E1E6EF;
+    --bg-success: #16c60c;
+    --bg-success-dark: #2ac267;
+    --bg-warning: #fba705;
+    --bg-error: #ea4335;
+    --bg-error-lighter: #ffe2df;
+    --bg-dark: #363636;
+    --bg-darker: #333333;
+    --bg-promo-close-btn: #225bb8b0;
+    --bg-info: #3b82f6;
+    --bg-statement: #0a4074;
+    --bg-light-dark: #555555;
+    --bg-input-number: #eff3f8;
+    --bg-lighter: #dfdfdf;
+    --bg-footer: #e1dbdb;
+    --bg-sky-lighter: #dce9ff;
+    --bg-lightest: #f4f4f4;
+    --bg-urban-gray: #afafaf;
+    --bg-pale-gray: #ededed;
+    --bg-sky-blue: #ecf3fe;
+    --bg-silver-gray: #bdbdbd;
+    --bg-light-smoke: #f5f6f6;
+
+    --border-primary: #00abc5;
+    --border-tertiary: #0a69ad;
+    --border-error: #ea4335;
+    --border-success-dark: #2ac267;
+    --border-info: #4096ff;
+    --border-invoice: #242424;
+    --border-light-dark: #555555;
+    --border-light: #d9d9d9;
+    --border-lighter: #e0e0e0;
+    --border-footer: #e1dbdb;
+    --border-urban-gray: #afafaf;
+    --border-pale-gray: #ededed;
+    --border-moonstone: #dfdfdf;
+
+    --gradient-primary: #00abc5;
+    --gradient-secondary: #5b89b5;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #f4f4f4;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  .scrollbar:hover::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px #dfdfdf;
+    background-color: #bdbdbd;
+  }
+
+  .scrollbar-white::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #ffffff;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .scrollbar-white::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+  }
+
+  .scrollbar-white::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  .scrollbar-white:hover::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px #dfdfdf;
+    background-color: #555;
+  }
+
+  .staff-scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px #f4f4f4;
+
+    background-color: transparent;
+  }
+
+  .staff-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+  }
+
+  .staff-scrollbar::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px #dfdfdf;
+    background-color: #bdbdbd;
+  }
+}
+
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  height: 100svh;
+  width: 100%;
+  min-height: 100%;
+}
+
+.app {
+  min-height: 100%;
+  height: 100%;
+}
+
+.custom-tabs .ant-tabs-nav-wrap {
+  padding: 0 0 13px 20px;
+  margin: 0;
+  background-color: white;
+}
+
+.custom-tab-merchant .ant-tabs-nav-wrap {
+  padding: 0 0 13px 0px;
+}
+
+.custom-tab-merchant {
+  padding-left: 0px !important;
+  background-color: white;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+  display: none;
+}
+
+.custom-tabs .ant-tabs-tab-active {
+  background-color: #363636 !important;
+  border-radius: 17px;
+  color: white;
+  font-size: 13px !important;
+  font-weight: 700;
+  padding: 6px 18px !important;
+}
+
+.custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: white !important;
+  text-shadow: none !important;
+}
+
+.custom-tabs .ant-tabs-tab {
+  border-radius: 17px;
+  color: #363636;
+  font-size: 13px !important;
+  font-weight: 700;
+}
+
+.custom-tabs .ant-tabs-nav-operations {
+  background-color: white;
+}
+
+.custom-tabs .ant-tabs-nav {
+  margin-bottom: 0px !important;
+}
+
+.ant-select-single,
+.ant-input-number-outlined,
+.ant-input-number-input-wrap input {
+  height: 56px !important;
+  line-height: 56px !important;
+}

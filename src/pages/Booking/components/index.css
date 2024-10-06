@@ -1,0 +1,17 @@
+// override for countr input
+div .ant-input-number-handler-wrap {
+    width: 0 !important;
+    display: none !important;
+}
+.ant-input-number-handler {
+    display: none !important;
+    width: 0 !important;
+}
+
+.ant-input-number-outlined .ant-input-number-handler-wrap, .ant-select-selector {
+    background: #EAECF0 !important;
+}
+
+.date::-webkit-scrollbar {
+  display: none;
+}
