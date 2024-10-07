@@ -6,7 +6,6 @@ const Button: Partial<ComponentToken> &
   Partial<AliasToken> & {
     algorithm?: boolean | MappingAlgorithm | MappingAlgorithm[];
   } = {
-  colorPrimary: "#8a81f6",
   algorithm: true,
   contentFontSize: 14,
   fontWeight: 600,

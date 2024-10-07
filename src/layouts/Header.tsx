@@ -78,7 +78,7 @@ const Header = ({ closeDrawer, openDrawer, openDrawerMenu }: IHeader) => {
                 <p className="text-4 font-semibold leading-3.25 text-light-dark">
                   {user?.username}
                 </p>
-                <img width={14} alt="Arrow Icon" src={ArrowRightIcon} />
+                <img width={12} alt="Arrow Icon" src={ArrowRightIcon} />
               </div>
             </div>
           </Dropdown>

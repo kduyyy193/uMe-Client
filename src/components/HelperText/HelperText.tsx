@@ -1,11 +1,11 @@
 import React from "react";
 
 interface IProps {
-    message: string;
+  message: string;
 }
 
 const HelperText: React.FC<IProps> = ({ message }) => {
-    return <p className="text-error text-sm leading-5.5 font-normal">{message}</p>;
+  return <p className="text-red-500 text-sm leading-5.5 font-normal">{message}</p>;
 };
 
 export default HelperText;

@@ -67,7 +67,7 @@ const Login = () => {
           <div>
             <img className="mx-auto" src={LogoImg} alt="LOGO" />
           </div>
-          <p className="text-3xl font-bold w-full mb-4">Sign In</p>
+          <p className="text-3xl font-bold w-full mb-6 text-center mt-4">Sign In</p>
           <div className="mt-4">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-12 gap-y-5">

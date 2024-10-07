@@ -7,6 +7,10 @@ import { Route, Routes } from "react-router-dom";
 const Login = lazy(() => import("pages/Login"));
 const Notfound = lazy(() => import("pages/NotFound"));
 const User = lazy(() => import("pages/User"));
+const Report = lazy(() => import("pages/Report"));
+const Table = lazy(() => import("pages/Table"));
+const Menu = lazy(() => import("pages/Menu"));
+const Order = lazy(() => import("pages/Order"));
 
 interface IRoute {
   id: string;
@@ -37,7 +41,27 @@ const ROUTES: IRoute[] = [
       {
         id: "acbdfdaa-e864-4e00-8157-bb29b40f208d",
         path: "/",
+        element: <Report />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-User",
+        path: "user",
         element: <User />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-Menu",
+        path: "menu",
+        element: <Menu />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-Table",
+        path: "table",
+        element: <Table />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-Order",
+        path: "order",
+        element: <Order />,
       },
     ],
   },

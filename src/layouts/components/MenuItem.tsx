@@ -22,9 +22,9 @@ const MenuItem: React.FC<IProps> = ({ name, icon, path }) => {
     <div
       onClick={handleNavigate}
       className={classNames(
-        "px-5 py-3 flex items-center space-x-3 cursor-pointer border-l-[5px] border-l-white hover:bg-lightest hover:border-l-tertiary mb-1.5",
+        "px-2 md:px-5 py-3 flex items-center space-x-3 cursor-pointer mb-1.5 hover:opacity-50",
         {
-          "bg-[#8a81f6]/30 !border-l-primary": location?.pathname === path,
+          "bg-blue-100 !border-l-primary": location?.pathname === path,
         }
       )}
     >

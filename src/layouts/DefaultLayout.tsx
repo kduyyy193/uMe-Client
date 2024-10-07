@@ -24,7 +24,7 @@ const DefaultLayout = () => {
         closeDrawer={handleCloseDrawer}
         openDrawerMenu={openDrawerMenu}
       />
-      <div className="pt-[60px] lg:pt-[81px] w-full min-h-full flex flex-row h-full">
+      <div className="pt-[60px] w-full min-h-full flex flex-row h-full">
         <div className="block h-auto min-h-full lg:hidden">
           <Drawer
             rootClassName="customer-menu-drawer"
@@ -40,9 +40,9 @@ const DefaultLayout = () => {
         <div className="hidden h-auto min-h-full lg:block">
           <LeftMenu />
         </div>
-        <div className="w-full h-full lg:w-[calc(100%-308px)] min-h-full bg-[#fafafa]">
-          <div className="h-full overflow-y-auto">
-            <div className="min-h-[calc(100%-80px)] sm:min-h-[calc(100%-70px)]">
+        <div className="w-full h-full lg:w-[calc(100%-240px)] min-h-full bg-[#fafafa]">
+          <div className="h-full w-full">
+            <div className="min-h-[calc(100%-54px)] sm:min-h-[calc(100%-54px)]">
               <Outlet />
             </div>
             <Footer />

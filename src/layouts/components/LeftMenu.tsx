@@ -1,24 +1,43 @@
 import { Collapse, ConfigProvider } from "antd";
 import MenuItem from "./MenuItem";
+import ArrowRightIcon from "assets/svg/arrowRight.svg";
 
 const MENU_ADMIN = [
   {
     id: 1,
     title: "R",
-    name: "User",
-    path: "/user",
+    name: "Report",
+    path: "/",
   },
   {
     id: 2,
+    title: "R",
+    name: "Table",
+    path: "/table",
+  },
+  {
+    id: 3,
+    title: "R",
+    name: "Menu",
+    path: "/menu",
+  },
+  {
+    id: 4,
+    title: "R",
+    name: "Order",
+    path: "/order",
+  },
+  {
+    id: 5,
     title: "C",
-    name: "Customer",
-    path: "/customer",
+    name: "User",
+    path: "/user",
   },
 ];
 
 const LeftMenu = () => {
   return (
-    <div className="min-h-full h-[calc(100%-80px)] overflow-y-auto scrollbar-white flex-shrink-0 ml-2 mt-2">
+    <div className="min-h-[calc(100%-61px)] overflow-y-auto scrollbar-white flex-shrink-0 ml-2 mt-2 md:w-[240px]">
       <ConfigProvider
         theme={{
           components: {
@@ -34,12 +53,20 @@ const LeftMenu = () => {
           bordered={false}
           defaultActiveKey={[1, 2]}
           expandIconPosition="end"
+          expandIcon={({ isActive }) => {
+            return (
+              <img
+                className={`mt-3 ${isActive ? "rotate-90" : "rotate-0"}`}
+                width={12}
+                alt="Arrow Icon"
+                src={ArrowRightIcon}
+              />
+            );
+          }}
           items={[
             {
               key: 1,
-              label: (
-                <p className="text-3.75 leading-4.5 font-bold text-light-dark">ADMINISTRATOR</p>
-              ),
+              label: <p className="text-xl font-bold text-light-dark">Merchant</p>,
               children: (
                 <div className="-mt-1">
                   {MENU_ADMIN.map((item) => {

@@ -62,7 +62,7 @@ const RHFTextField = <T extends Record<string, any>>({
               disabled={disabled}
               maxLength={maxLength}
               moreclass={classNames(moreclass, {
-                "border-red-500": error?.message && status === "error",
+                "text-red-500": error?.message && status === "error",
               })}
             />
             {showError && <HelperText message={error?.message || ""} />}
