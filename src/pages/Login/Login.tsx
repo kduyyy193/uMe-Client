@@ -11,6 +11,7 @@ import useAsync from "hooks/useAsync";
 import { TokenResponse } from "services/auth/types";
 import { ApiResponse } from "services/types";
 import { useStateContext } from "contexts/ContextProvider";
+import { KEY_TOKEN } from "configs/auth";
 
 type FormInputs = {
   username: string;
@@ -47,6 +48,7 @@ const Login = () => {
         console.log(response.data.user);
         setUser(response.data.user);
         setToken(response.data?.token);
+        localStorage.setItem(KEY_TOKEN, response.data?.token);
         navigate("/");
         return;
       }
@@ -96,8 +98,8 @@ const Login = () => {
                         onClick={toggleShowPassword}
                         className={cn(
                           "cursor-pointer text-lg las absolute top-2.5 right-3 z-10",
-                          "la-eye-slash" && !showPassword,
-                          "la-eye" && showPassword
+                          !showPassword && "la-eye-slash",
+                          showPassword && "la-eye"
                         )}
                       />
                     }

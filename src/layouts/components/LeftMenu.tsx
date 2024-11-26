@@ -4,12 +4,6 @@ import ArrowRightIcon from "assets/svg/arrowRight.svg";
 
 const MENU_ADMIN = [
   {
-    id: 1,
-    title: "R",
-    name: "Report",
-    path: "/",
-  },
-  {
     id: 2,
     title: "R",
     name: "Table",
@@ -32,6 +26,12 @@ const MENU_ADMIN = [
     title: "C",
     name: "User",
     path: "/user",
+  },
+  {
+    id: 1,
+    title: "R",
+    name: "Report",
+    path: "/",
   },
 ];
 

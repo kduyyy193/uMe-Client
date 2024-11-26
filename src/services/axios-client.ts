@@ -3,7 +3,6 @@ import { KEY_TOKEN } from "configs/auth";
 import queryString from "qs";
 
 const API_BASE_URL = import.meta.env.VITE_REACT_APP_URL_API;
-export const token = localStorage.getItem(KEY_TOKEN);
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
@@ -14,6 +13,7 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem(KEY_TOKEN);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

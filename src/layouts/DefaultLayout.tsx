@@ -42,7 +42,7 @@ const DefaultLayout = () => {
         </div>
         <div className="w-full h-full lg:w-[calc(100%-240px)] min-h-full bg-[#fafafa]">
           <div className="h-full w-full">
-            <div className="min-h-[calc(100%-54px)] sm:min-h-[calc(100%-54px)]">
+            <div className="min-h-[calc(100%-54px)] sm:min-h-[calc(100%-54px)] pb-[216px]">
               <Outlet />
             </div>
             <Footer />
