@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ConfigProvider, App as AntApp } from "antd";
 import { StyleProvider } from "@ant-design/cssinjs";
-import Theme from "theme/index.ts";
+import Theme, { formConfig } from "theme/index.ts";
 import { ContextProvider } from "contexts/ContextProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <StyleProvider hashPriority="high">
         <ContextProvider>
-          <ConfigProvider theme={Theme}>
+          <ConfigProvider theme={Theme} form={formConfig}>
             <AntApp message={{ maxCount: 1 }} rootClassName="w-full h-full">
               <App />
             </AntApp>

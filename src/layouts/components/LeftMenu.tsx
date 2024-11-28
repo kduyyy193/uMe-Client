@@ -6,32 +6,32 @@ const MENU_ADMIN = [
   {
     id: 2,
     title: "R",
-    name: "Table",
-    path: "/table",
+    name: "Table View",
+    path: "/table-view",
   },
   {
     id: 3,
     title: "R",
-    name: "Menu",
-    path: "/menu",
+    name: "Category",
+    path: "/category",
   },
   {
     id: 4,
     title: "R",
-    name: "Order",
-    path: "/order",
-  },
-  {
-    id: 5,
-    title: "C",
-    name: "User",
-    path: "/user",
+    name: "Receipt",
+    path: "/receipt",
   },
   {
     id: 1,
     title: "R",
     name: "Report",
     path: "/",
+  },
+  {
+    id: 6,
+    title: "R",
+    name: "Table",
+    path: "/table",
   },
 ];
 

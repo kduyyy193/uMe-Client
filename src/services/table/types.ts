@@ -6,3 +6,9 @@ export type TTableResponse = {
   location: string;
   isTakeaway: boolean;
 };
+
+export type TTableRequest = {
+  tableNumber: number;
+  seats: number;
+  location?: string;
+};

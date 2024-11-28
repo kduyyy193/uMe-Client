@@ -10,7 +10,7 @@ const Footer = () => {
         boxShadow: "rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px",
       }}
     >
-      {location.pathname === "/table" && (
+      {location.pathname === "/table-view" && (
         <div className="flex gap-8 mb-4">
           {STATUS.map((s) => (
             <div key={s.id} className="flex items-center gap-4 mx-auto w-fit">

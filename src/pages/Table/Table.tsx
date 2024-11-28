@@ -1,20 +1,75 @@
+import TableService from "services/table";
 import useAsync from "hooks/useAsync";
 import { useEffect, useState } from "react";
-import TableService from "services/table";
-import { TTableResponse } from "services/table/types";
 import { ApiResponse } from "services/types";
-import cn from "utils/cn";
+import { TTableRequest, TTableResponse } from "services/table/types";
+import Columns from "./Columns";
+import useModal from "hooks/useModal";
+import AddTableModal from "./components/AddTableModal";
+import { message, Spin } from "antd";
+import Button from "components/FormV2/Button";
+import Modal from "components/Modal";
+import EditTableModal from "./components/EditTableModal";
+import TableComponent from "components/Table";
 
-const Table = () => {
-  const getAllTablesAPI = useAsync<ApiResponse<TTableResponse[]>>(TableService.getAllTables);
-
+const TablePage = () => {
+  const { open, handleClose, handleOpen } = useModal();
   const [tables, setTables] = useState<TTableResponse[]>([]);
+  const [selectedItem, setSelectedItem] = useState<TTableResponse | null>(null);
+
+  const getAllTablesAPI = useAsync<ApiResponse<TTableResponse[]>>(TableService.getAllTables);
+  const addNewTableAPI = useAsync<ApiResponse<TTableResponse>>(TableService.createTable);
+  const editTableAPI = useAsync<ApiResponse<TTableResponse>>(TableService.updateTable);
+  const deleteTableAPI = useAsync<ApiResponse<{ msg: string }>>(TableService.deleteTable);
 
   const getAllTables = async () => {
     const response = await getAllTablesAPI.run();
     if (response?.data) {
-      setTables(response.data);
+      const tablesWithKeys = response.data.map((table, idx) => ({
+        ...table,
+        key: idx + 1,
+      }));
+      setTables(tablesWithKeys);
     }
+  };
+
+  const handleAddTable = async (values: TTableRequest) => {
+    const response = await addNewTableAPI.run(values);
+    if (response?.data) {
+      getAllTables();
+      message.success("Thêm mới bàn thành công");
+      handleClose();
+    } else {
+      message.error("Đã xảy ra lỗi");
+    }
+  };
+
+  const handleEditTable = async (values: TTableRequest) => {
+    if (!selectedItem) return;
+    const response = await editTableAPI.run(selectedItem._id, values);
+    if (response?.data) {
+      getAllTables();
+      handleClose();
+      message.success("Chỉnh sửa bàn thành công");
+    } else {
+      message.error("Đã xảy ra lỗi");
+    }
+  };
+
+  const handleDeleteTable = async (tableId: string) => {
+    if (!tableId) return;
+    const response = await deleteTableAPI.run(tableId);
+    if (response?.data) {
+      getAllTables();
+      handleClose();
+      message.success("Xoá bàn thành công");
+    } else {
+      message.error("Đã xảy ra lỗi");
+    }
+  };
+
+  const handleSelectItem = (value: TTableResponse) => {
+    setSelectedItem(value);
   };
 
   useEffect(() => {
@@ -22,63 +77,57 @@ const Table = () => {
   }, []);
 
   return (
-    <div className="flex items-center flex-wrap gap-20 w-auto mt-8 ml-8">
-      {tables?.map((table) => (
-        <div
-          key={table._id}
-          className={cn(
-            "relative flex items-center justify-center rounded-2xl w-[200px] h-[200px] text-[40px] font-semibold text-white border-[10px] bg-gray-500 border-gray-300",
-            table.isTakeaway && "border-purple-300",
-            table.status === "dining" && "border-blue-300"
-          )}
-        >
-          <div
-            className={cn(
-              "w-[180px] h-[180px] rounded-lg flex items-center justify-center  bg-gray-500",
-              table.isTakeaway && "bg-purple-500",
-              table.status === "dining" && "bg-blue-500"
-            )}
-          >
-            {table.isTakeaway && (
-              <span className="absolute top-2 right-2 font-semibold text-sm text-purple-900 bg-white p-1 rounded-lg ">
-                Mang đi
-              </span>
-            )}
-            <h3>{table?.tableNumber > 9 ? table?.tableNumber : "0" + table?.tableNumber}</h3>
-            <span></span>
-            <div
-              className={cn(
-                "w-20 h-4 rounded-tl-lg rounded-tr-lg absolute top-[-26px] bg-gray-200/35 border",
-                table.isTakeaway && "bg-purple-500",
-                table.status === "dining" && "bg-blue-500"
-              )}
-            ></div>
-            <div
-              className={cn(
-                "w-20 h-4 rounded-bl-lg rounded-br-lg absolute bottom-[-26px] bg-gray-200/35 border",
-                table.isTakeaway && "bg-purple-500",
-                table.status === "dining" && "bg-blue-500"
-              )}
-            ></div>
-            <div
-              className={cn(
-                "w-4 h-20 rounded-tl-lg rounded-bl-lg absolute left-[-26px] bg-gray-200/35 border",
-                table.isTakeaway && "bg-purple-500",
-                table.status === "dining" && "bg-blue-500"
-              )}
-            ></div>
-            <div
-              className={cn(
-                "w-4 h-20 rounded-tr-lg rounded-br-lg absolute right-[-26px] bg-gray-200/35 border",
-                table.isTakeaway && "bg-purple-500",
-                table.status === "dining" && "bg-blue-500"
-              )}
-            ></div>
-          </div>
+    <Spin spinning={getAllTablesAPI.loading || addNewTableAPI.loading || deleteTableAPI.loading}>
+      <div className="m-4">
+        <div className="w-[156px] ml-auto">
+          <Button onClick={() => handleOpen("add")}>
+            <div className="flex items-center">
+              <p className="ml-1 font-semibold text-white bg-blue-500 text-base px-4 py-2 rounded-lg">
+                Thêm mới
+              </p>
+            </div>
+          </Button>
         </div>
-      ))}
-    </div>
+        <TableComponent
+          scroll={{ x: "100%" }}
+          columns={Columns({
+            onClickDelete: () => handleOpen("delete"),
+            onClickEdit: () => handleOpen("edit"),
+            handleSelectItem,
+          })}
+          count={0}
+          data={tables}
+          page={1}
+          rowPerPage={10}
+        />
+        {open === "add" && (
+          <AddTableModal
+            open={open === "add"}
+            handleClose={handleClose}
+            handleAddTable={handleAddTable}
+          />
+        )}
+        {open === "edit" && selectedItem && (
+          <EditTableModal
+            open={open === "edit"}
+            values={selectedItem}
+            handleClose={handleClose}
+            handleEditTable={handleEditTable}
+          />
+        )}
+        {open === "delete" && selectedItem && (
+          <Modal.Delete
+            open={open === "delete"}
+            onCancel={handleClose}
+            onConfirm={() => {
+              handleDeleteTable(selectedItem._id);
+              handleClose();
+            }}
+          />
+        )}
+      </div>
+    </Spin>
   );
 };
 
-export default Table;
+export default TablePage;

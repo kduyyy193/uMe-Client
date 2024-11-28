@@ -1,6 +1,6 @@
 import axiosInstance from "../axios-client";
 import { ApiError, ApiResponse } from "services/types";
-import { TTableResponse } from "./types";
+import { TTableRequest, TTableResponse } from "./types";
 
 const TableService = {
   nameApi: "tables",
@@ -17,11 +17,9 @@ const TableService = {
       };
     }
   },
-  createTable: async (tableData: {
-    tableNumber: number;
-    seats: number;
-    location?: string;
-  }): Promise<ApiResponse<TTableResponse> | ApiError> => {
+  createTable: async (
+    tableData: TTableRequest
+  ): Promise<ApiResponse<TTableResponse> | ApiError> => {
     try {
       const { data } = await axiosInstance.post<ApiResponse<TTableResponse>>(
         `/${TableService.nameApi}`,
@@ -35,9 +33,22 @@ const TableService = {
       };
     }
   },
+  getTableById: async (id: string): Promise<ApiResponse<TTableResponse> | ApiError> => {
+    try {
+      const { data } = await axiosInstance.get<ApiResponse<TTableResponse>>(
+        `/${TableService.nameApi}/${id}`
+      );
+      return data;
+    } catch (error: any) {
+      return {
+        msg: error?.response?.data?.msg,
+        status: error?.response?.status,
+      };
+    }
+  },
   updateTable: async (
     id: string,
-    tableData: { seats?: number; status?: string; location?: string }
+    tableData: TTableRequest
   ): Promise<ApiResponse<TTableResponse> | ApiError> => {
     try {
       const { data } = await axiosInstance.put<ApiResponse<TTableResponse>>(

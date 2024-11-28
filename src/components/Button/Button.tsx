@@ -13,7 +13,7 @@ const Button = ({ id, children, title, type, className, onClick }: ButtonProps) 
     <button
       id={id}
       className={cn(
-        `${className}`,
+        `${className || ""}`,
         type === "submit" && "bg-primary text-white cursor-pointer hover:opacity-75",
         type === "cancel" &&
           "text-primary bg-white font-bold shadow-md cursor-pointer hover:opacity-75",

@@ -1,16 +1,19 @@
 import Fallback from "components/Fallback";
 import DefaultLayout from "layouts/DefaultLayout";
 import GuestLayout from "layouts/GuestLayout";
+import Receipt from "pages/Receipt";
+import TableDetails from "pages/TableView/TableDetails";
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
 const Login = lazy(() => import("pages/Login"));
 const Notfound = lazy(() => import("pages/NotFound"));
-const User = lazy(() => import("pages/User"));
 const Report = lazy(() => import("pages/Report"));
+const TableView = lazy(() => import("pages/TableView"));
 const Table = lazy(() => import("pages/Table"));
-const Menu = lazy(() => import("pages/Menu"));
-const Order = lazy(() => import("pages/Order"));
+const Category = lazy(() => import("pages/Category"));
+const Menu = lazy(() => import("pages/Category/Menu"));
+const Order = lazy(() => import("pages/Receipt"));
 
 interface IRoute {
   id: string;
@@ -44,13 +47,18 @@ const ROUTES: IRoute[] = [
         element: <Report />,
       },
       {
-        id: "acbdfdaa-e864-4e00-8157-User",
-        path: "user",
-        element: <User />,
+        id: "acbdfdaa-e864-4e00-8157-Table",
+        path: "table-view",
+        element: <TableView />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-Cate",
+        path: "category",
+        element: <Category />,
       },
       {
         id: "acbdfdaa-e864-4e00-8157-Menu",
-        path: "menu",
+        path: "menu/:id",
         element: <Menu />,
       },
       {
@@ -59,9 +67,19 @@ const ROUTES: IRoute[] = [
         element: <Table />,
       },
       {
+        id: "acbdfdaa-e864-4e00-8157-receipt",
+        path: "receipt",
+        element: <Receipt />,
+      },
+      {
         id: "acbdfdaa-e864-4e00-8157-Order",
-        path: "order",
+        path: "order/:id",
         element: <Order />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-details",
+        path: "table-details/:id",
+        element: <TableDetails />,
       },
     ],
   },
