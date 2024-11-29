@@ -46,7 +46,7 @@ const Pagination: React.FC<IProps> = ({
   if (count === 0) return null;
 
   return (
-    <div className="flex flex-col space-y-4 items-start md:flex-row md:space-y-0 md:justify-between">
+    <div className="flex flex-col space-y-4 items-center md:flex-row md:space-y-0 md:justify-between">
       <div className="flex items-center space-x-2">
         {showRowPerPage && (
           <>
@@ -78,7 +78,7 @@ const Pagination: React.FC<IProps> = ({
         pageClassName="pagination-item text-center duration-300 transition-all py-1 px-2.5 text-sm font-medium leading-normal rounded-md text-dark hover:!text-dark"
         containerClassName={"items-center right flex justify-center"}
         activeClassName={
-          "active_link text-center duration-300 transition-all py-1 px-2.5 text-sm font-medium leading-normal bg-dark rounded-md text-white hover:!text-white"
+          "active_link text-center duration-300 transition-all py-1 px-2.5 text-sm font-medium leading-normal bg-blue-400 text-white rounded-md text-white hover:!text-white"
         }
       />
     </div>

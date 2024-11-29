@@ -84,13 +84,10 @@ const Menu = () => {
   return (
     <Spin spinning={getAllMenuAPI.loading || addNewMenuAPI.loading || deleteMenuAPI.loading}>
       <div className="m-4">
+        <h2 onClick={handleBack} className="font-semibold text-lg cursor-pointer">
+          {"< Danh sách menu"}
+        </h2>
         <div className="flex items-center">
-          <div
-            onClick={handleBack}
-            className="font-semibold text-base text-[#00000d9] ml-4 cursor-pointer"
-          >
-            {"< Back"}
-          </div>
           <div className="w-[156px] ml-auto">
             <Button onClick={() => handleOpen("add")}>
               <div className="flex items-center">

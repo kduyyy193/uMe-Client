@@ -84,6 +84,7 @@ const Category = () => {
       spinning={getAllCategoryAPI.loading || addNewCategoryAPI.loading || deleteCategoryAPI.loading}
     >
       <div className="m-4">
+        <h2 className="font-semibold text-lg">Danh sách danh mục</h2>
         {/* <div className="relative">
           <div className="flex gap-8 ml-auto w-fit mr-8">
             <div

@@ -6,6 +6,10 @@
     color: white !important;
 }
 
+.pagination-item {
+    margin: 0 4px;
+}
+
 .previous-item {
     height: 29px;
     display: flex;

@@ -53,10 +53,18 @@ const OrderService = {
       };
     }
   },
-  getReceiptList: async (): Promise<ApiResponse<TOrderResponse[]> | ApiError> => {
+  getReceiptList: async ({
+    searchDate,
+    currentPage = 1,
+    pageSize = 10,
+  }: {
+    searchDate?: string[];
+    currentPage?: number;
+    pageSize?: number;
+  }): Promise<ApiResponse<TOrderResponse[]> | ApiError> => {
     try {
       const { data } = await axiosInstance.get<ApiResponse<TOrderResponse[]>>(
-        `/${OrderService.nameApi}/checkout`
+        `/${OrderService.nameApi}/checkout?page=${currentPage}&pageSize=${pageSize}&startDate=${searchDate?.[0]}&endDate=${searchDate?.[1]}`
       );
       return data;
     } catch (error: any) {

@@ -32,6 +32,7 @@ const Columns = (): TableColumnsType<TOrderResponse> => {
       key: "totalAmount",
       width: 80,
       ellipsis: true,
+      render: (value) => <div>{value?.toLocaleString()}VND</div>,
     },
     {
       title: "Hình thức",

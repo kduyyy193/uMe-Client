@@ -177,7 +177,7 @@ const TableDetails = () => {
                     <span>{`${m.quantity}x`}</span>
                     <div className="ml-4">{m.name}</div>
                     <div className="w-fit ml-auto text-blue-500 font-medium">
-                      {m.quantity * m.price} VND
+                      {(m.quantity * m.price)?.toLocaleString()} VND
                     </div>
                   </div>
                 </div>
@@ -213,7 +213,10 @@ const TableDetails = () => {
             <div className="flex">
               <span className="font-semibold">Tổng tiền:</span>
               <div className="w-fit ml-auto text-blue-500 font-semibold">
-                {orderMenu.reduce((total, item) => total + item.price * item.quantity, 0)} VND
+                {orderMenu
+                  .reduce((total, item) => total + item.price * item.quantity, 0)
+                  ?.toLocaleString()}{" "}
+                VND
               </div>
             </div>
             {orderMenu.length > 0 ? (

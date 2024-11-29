@@ -1,43 +1,52 @@
 import { Collapse, ConfigProvider } from "antd";
 import MenuItem from "./MenuItem";
 import ArrowRightIcon from "assets/svg/arrowRight.svg";
+import { KEY_USER } from "configs/auth";
 
 const MENU_ADMIN = [
   {
     id: 2,
     title: "R",
-    name: "Table View",
+    name: "Bàn gọi món",
     path: "/table-view",
+    role: "Merchant Waiter",
   },
   {
     id: 3,
     title: "R",
-    name: "Category",
+    name: "Danh mục",
     path: "/category",
-  },
-  {
-    id: 4,
-    title: "R",
-    name: "Receipt",
-    path: "/receipt",
-  },
-  {
-    id: 1,
-    title: "R",
-    name: "Report",
-    path: "/",
+    role: "Merchant",
   },
   {
     id: 6,
     title: "R",
-    name: "Table",
+    name: "Cấu hình bàn",
     path: "/table",
+    role: "Merchant",
+  },
+  {
+    id: 4,
+    title: "R",
+    name: "Hoá đơn",
+    path: "/receipt",
+    role: "Merchant",
+  },
+  {
+    id: 1,
+    title: "R",
+    name: "Báo cáo",
+    path: "/",
+    role: "Merchant",
   },
 ];
 
 const LeftMenu = () => {
+  const user = localStorage.getItem(KEY_USER)
+    ? JSON.parse(localStorage.getItem(KEY_USER) as string)
+    : {};
   return (
-    <div className="min-h-[calc(100%-61px)] overflow-y-auto scrollbar-white flex-shrink-0 ml-2 mt-2 md:w-[240px]">
+    <div className="mt-[60px] min-h-[calc(100%-61px)] overflow-y-auto scrollbar-white flex-shrink-0 ml-2 md:w-[240px]">
       <ConfigProvider
         theme={{
           components: {
@@ -66,10 +75,21 @@ const LeftMenu = () => {
           items={[
             {
               key: 1,
-              label: <p className="text-xl font-bold text-light-dark">Merchant</p>,
+              label: (
+                <p className="text-xl font-bold text-light-dark">
+                  {user?.role === "Merchant"
+                    ? "Chủ quán"
+                    : user?.role === "Waiter"
+                      ? "Phục vụ"
+                      : "Đầu bếp"}
+                </p>
+              ),
               children: (
                 <div className="-mt-1">
                   {MENU_ADMIN.map((item) => {
+                    if (!item.role?.includes(user?.role)) {
+                      return null;
+                    }
                     return (
                       <MenuItem
                         key={item.id}

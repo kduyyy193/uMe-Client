@@ -4,6 +4,14 @@ export type ApiResponse<T> = {
   count?: number;
   pages?: number;
   unread?: number;
+  pageInfo?: PaginationInfo;
+};
+
+export type PaginationInfo = {
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  count: number;
 };
 
 export type ApiError = {

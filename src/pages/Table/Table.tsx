@@ -79,6 +79,7 @@ const TablePage = () => {
   return (
     <Spin spinning={getAllTablesAPI.loading || addNewTableAPI.loading || deleteTableAPI.loading}>
       <div className="m-4">
+        <h2 className="font-semibold text-lg">Danh sách bàn</h2>
         <div className="w-[156px] ml-auto">
           <Button onClick={() => handleOpen("add")}>
             <div className="flex items-center">
