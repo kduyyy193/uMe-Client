@@ -4,9 +4,9 @@ export interface TOrderResponse {
   items: {
     _id: string;
     name: string;
+    status: "NEW" | "INPROGRESS" | "DONE";
     quantity: number;
     price: number;
-    status: string;
     note?: string;
   }[];
 

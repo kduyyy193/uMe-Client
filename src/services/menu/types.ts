@@ -3,6 +3,7 @@ export type TMenuResponse = {
   name: string;
   price: number;
   quantity: number;
+  status: "NEW" | "INPROGRESS" | "DONE";
   description?: string;
   createdAt?: string;
   updatedAt?: string;

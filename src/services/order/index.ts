@@ -1,9 +1,16 @@
 import axiosInstance from "../axios-client";
 import { ApiError, ApiResponse } from "services/types";
 import { TOrderResponse } from "./types";
+import { TMenuResponse } from "services/menu/types";
 
 const OrderService = {
   nameApi: "orders",
+  handleError(error: any): ApiError {
+    return {
+      msg: error?.response?.data?.msg || "Có lỗi xảy ra. Vui lòng thử lại sau.",
+      status: error?.response?.status,
+    };
+  },
   createOrder: async (
     tableId: string,
     items: { menuItemId: string; quantity: number }[],
@@ -17,10 +24,7 @@ const OrderService = {
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi tạo đơn hàng",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
     }
   },
   updateOrder: async (
@@ -29,15 +33,27 @@ const OrderService = {
   ): Promise<ApiResponse<TOrderResponse> | ApiError> => {
     try {
       const { data } = await axiosInstance.put<ApiResponse<TOrderResponse>>(
-        `/${OrderService.nameApi}/${orderId}`,
+        `/${OrderService.nameApi}/update-items/${orderId}`,
         { items }
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi cập nhật đơn hàng",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
+    }
+  },
+  updateStatusItem: async (
+    orderId: string,
+    itemId: string,
+    newStatus: string
+  ): Promise<ApiResponse<TMenuResponse> | ApiError> => {
+    try {
+      const { data } = await axiosInstance.put<ApiResponse<TMenuResponse>>(
+        `/${OrderService.nameApi}/update-status`,
+        { newStatus, orderId, itemId }
+      );
+      return data;
+    } catch (error: any) {
+      return OrderService.handleError(error);
     }
   },
   getOrderByTableId: async (tableId: string): Promise<ApiResponse<TOrderResponse> | ApiError> => {
@@ -47,10 +63,17 @@ const OrderService = {
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi lấy đơn hàng theo bàn",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
+    }
+  },
+  getOrderItems: async (): Promise<ApiResponse<TMenuResponse[]> | ApiError> => {
+    try {
+      const { data } = await axiosInstance.get<ApiResponse<TMenuResponse[]>>(
+        `/${OrderService.nameApi}/order-items`
+      );
+      return data;
+    } catch (error: any) {
+      return OrderService.handleError(error);
     }
   },
   getReceiptList: async ({
@@ -68,10 +91,7 @@ const OrderService = {
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi lấy đơn hàng theo bàn",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
     }
   },
   getOrderByUniqueId: async (uniqueId: string): Promise<ApiResponse<TOrderResponse> | ApiError> => {
@@ -81,10 +101,7 @@ const OrderService = {
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi lấy đơn hàng",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
     }
   },
   updateOrderStatus: async (
@@ -98,10 +115,7 @@ const OrderService = {
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi cập nhật trạng thái đơn hàng",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
     }
   },
   deleteOrder: async (orderId: string): Promise<ApiResponse<{ success: boolean }> | ApiError> => {
@@ -111,10 +125,7 @@ const OrderService = {
       );
       return data;
     } catch (error: any) {
-      return {
-        msg: error?.response?.data?.msg || "Lỗi khi xóa đơn hàng",
-        status: error?.response?.status,
-      };
+      return OrderService.handleError(error);
     }
   },
 };

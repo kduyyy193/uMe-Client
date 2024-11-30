@@ -1,8 +1,6 @@
 import Fallback from "components/Fallback";
 import DefaultLayout from "layouts/DefaultLayout";
 import GuestLayout from "layouts/GuestLayout";
-import Receipt from "pages/Receipt";
-import TableDetails from "pages/TableView/TableDetails";
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -14,6 +12,9 @@ const Table = lazy(() => import("pages/Table"));
 const Category = lazy(() => import("pages/Category"));
 const Menu = lazy(() => import("pages/Category/Menu"));
 const Order = lazy(() => import("pages/Receipt"));
+const Kitchen = lazy(() => import("pages/Kitchen"));
+const Receipt = lazy(() => import("pages/Receipt"));
+const TableDetails = lazy(() => import("pages/TableView/TableDetails"));
 
 interface IRoute {
   id: string;
@@ -70,6 +71,11 @@ const ROUTES: IRoute[] = [
         id: "acbdfdaa-e864-4e00-8157-receipt",
         path: "receipt",
         element: <Receipt />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-kitchen",
+        path: "kitchen",
+        element: <Kitchen />,
       },
       {
         id: "acbdfdaa-e864-4e00-8157-Order",

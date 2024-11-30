@@ -1,5 +1,6 @@
 import useAsync from "hooks/useAsync";
-import { useEffect, useState } from "react";
+import html2canvas from 'html2canvas-pro';
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import CategoryService from "services/catergory";
 import { TCategoryResponse } from "services/catergory/types";
@@ -15,6 +16,9 @@ import OrderService from "services/order";
 import { TOrderResponse } from "services/order/types";
 import { Checkbox, message, Spin } from "antd";
 import CheckoutService from "services/checkout";
+import PlusIcon from "assets/icons/PlusIcon";
+import MinusIcon from "assets/icons/MinusIcon";
+import _ from "lodash";
 
 const TableDetails = () => {
   const { id } = useParams();
@@ -24,6 +28,7 @@ const TableDetails = () => {
   const getTableByIdAPI = useAsync<ApiResponse<TTableResponse>>(TableService.getTableById);
   const getAllMenuAPI = useAsync<ApiResponse<TMenuResponse[]>>(MenuService.getAllMenusByCategory);
   const createOrderAPI = useAsync<ApiResponse<TOrderResponse>>(OrderService.createOrder);
+  const updateOrderAPI = useAsync<ApiResponse<TOrderResponse>>(OrderService.updateOrder);
   const getOrderByTableIdAPI = useAsync<ApiResponse<TOrderResponse>>(
     OrderService.getOrderByTableId
   );
@@ -35,7 +40,8 @@ const TableDetails = () => {
   const [selectedCategory, setSelectedCategory] = useState<TCategoryResponse>();
   const [menu, setMenu] = useState<TMenuResponse[]>([]);
   const [orderMenu, setOrderMenu] = useState<TMenuResponse[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<"NONE" | "CASH" | "CREDIT_CARD">("CASH");
+  const [paymentMethod, setPaymentMethod] = useState< "CASH" | "NONE" | "CREDIT_CARD">("CASH");
+  const receiptRef = useRef(null);
 
   const getAllCategory = async () => {
     const response = await getAllCategoryAPI.run();
@@ -69,8 +75,39 @@ const TableDetails = () => {
     if (response?.data) {
       setOrder(response.data);
       setOrderMenu(response.data?.items);
-      setPaymentMethod(response.data?.paymentMethod);
     }
+  };
+
+  const handleIncreaItem = (itemId: string) => {
+    const newOrder = orderMenu?.map((item) => {
+      if (item._id === itemId) {
+        return {
+          ...item,
+          quantity: item.quantity + 1,
+        };
+      }
+      return item;
+    });
+    setOrderMenu(newOrder);
+  };
+
+  const handleDecreaItem = (itemId: string) => {
+    const newOrder = orderMenu
+      ?.map((item) => {
+        if (item._id === itemId) {
+          if (item.quantity === 1) {
+            return null;
+          }
+          return {
+            ...item,
+            quantity: item.quantity - 1,
+          };
+        }
+        return item;
+      })
+      .filter((item) => item !== null);
+
+    setOrderMenu(newOrder);
   };
 
   const handleSelectCategory = (c: TCategoryResponse) => {
@@ -91,12 +128,12 @@ const TableDetails = () => {
         {
           ...m,
           quantity: 1,
+          status: "NEW"
         },
       ];
     });
   };
-
-  const handleCheckout = async () => {
+  const hanelCheckout = async () => {
     if (!order?._id) {
       const response = await createOrderAPI.run(id, orderMenu, table?.isTakeaway);
       if (response?.data) {
@@ -105,16 +142,26 @@ const TableDetails = () => {
       }
       message.error("Đã xảy ra lỗi");
     } else {
-      const response = await checkoutAPI.run(order?._id, paymentMethod);
-      if (response?.data) {
-        setOrder(undefined);
-        setOrderMenu([]);
-        return message.success("Thanh toán thành công");
+      if (areArraysNotEqual) {
+        const response = await updateOrderAPI.run(order._id, orderMenu, table?.isTakeaway);
+        if (response?.data) {
+          getOrderByTableId(id as string);
+          return message.success("Tạo đơn thành công");
+        }
+        message.error("Đã xảy ra lỗi");
+      } else {
+        const response = await checkoutAPI.run(order?._id, paymentMethod);
+        if (response?.data) {
+          setOrder(undefined);
+          setOrderMenu([]);
+          downloadReceipt()
+          return message.success("Thanh toán thành công");
+        }
+        message.error("Đã xảy ra lỗi");
       }
-      message.error("Đã xảy ra lỗi");
     }
   };
-
+console.log(paymentMethod)
   useEffect(() => {
     if (!id) return;
     getAllCategory();
@@ -122,10 +169,29 @@ const TableDetails = () => {
     getOrderByTableId(id);
   }, [id]);
 
+  const areArraysNotEqual = 
+  orderMenu.length !== getOrderByTableIdAPI?.value?.data?.items.length || 
+  !orderMenu.every((item, index) => 
+    _.isEqual(item, getOrderByTableIdAPI?.value?.data?.items[index])
+  );
+
+  const downloadReceipt = () => {
+    if (receiptRef.current) {
+      console.log("object")
+      html2canvas(receiptRef.current).then(canvas => {
+        const dataUrl = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = 'receipt.png';
+        link.click();
+      });
+    }
+  };
+
   return (
     <Spin spinning={checkoutAPI.loading || createOrderAPI.loading || getAllCategoryAPI.loading}>
       <div className="m-4 flex">
-        <div className="grow mr-4 max-w-[calc(100%-400px)]">
+        <div className="grow mr-4 max-w-[calc(100%-600px)]">
           <div className="mt-4 font-semibold">Chọn danh mục</div>
           <div className="flex gap-4 flex-wrap mt-4 pb-4">
             {category.map((c) => {
@@ -164,8 +230,9 @@ const TableDetails = () => {
             <div>Không có món ăn nào để chọn</div>
           )}
         </div>
-        <div className="w-[2px] absolute right-[400px] min-h-[700px] z-0 bg-gray-700"></div>
-        <div className="w-[400px] max-h-[500px]">
+        <div className="w-[2px] absolute right-[600px] min-h-[90vh] z-0 bg-gray-700"></div>
+        {!checkoutAPI.loading && <div className="w-[568px] max-h-[500px] m-4">
+          <div className="text-center">UseMe App</div>
           <div className="text-center text-lg font-semibold">
             Đơn hàng của bàn {table?.tableNumber}
           </div>
@@ -173,11 +240,26 @@ const TableDetails = () => {
             {orderMenu?.map((m) => {
               return (
                 <div key={m._id} className="mt-2">
-                  <div className="flex">
+                  <div className="flex items-center">
                     <span>{`${m.quantity}x`}</span>
                     <div className="ml-4">{m.name}</div>
                     <div className="w-fit ml-auto text-blue-500 font-medium">
                       {(m.quantity * m.price)?.toLocaleString()} VND
+                    </div>
+                    <div onClick={() => handleIncreaItem(m._id)}>
+                      <PlusIcon height="28px" />
+                    </div>
+                    {m.status === "NEW" && (
+                      <div onClick={() => handleDecreaItem(m._id)}>
+                        <MinusIcon height="28px" />
+                      </div>
+                    )}
+                    <div>
+                      {m.status === "NEW"
+                        ? "Mới"
+                        : m.status === "INPROGRESS"
+                          ? "Đang nấu"
+                          : "Thành món"}
                     </div>
                   </div>
                 </div>
@@ -231,19 +313,67 @@ const TableDetails = () => {
               </div>
             ) : null}
           </div>
-        </div>
+        </div>}
+        {checkoutAPI.loading &&<div ref={receiptRef} className="w-[568px] max-h-[500px] m-4 px-4 py-8">
+          <div className="text-center">UseMe App</div>
+          <div className="text-center text-lg font-semibold">
+            Hoá đơn thanh toán của bàn {table?.tableNumber}
+          </div>
+          <div className="mt-4 ml-4">
+            {orderMenu?.map((m) => {
+              return (
+                <div key={m._id} className="mt-2">
+                  <div className="flex items-center">
+                    <span>{`${m.quantity}x`}</span>
+                    <div className="ml-4">{m.name}</div>
+                    <div className="w-fit ml-auto text-blue-500 font-medium">
+                      {(m.quantity * m.price)?.toLocaleString()} VND
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-4 ml-4">
+            <div className="flex">
+              <span className="font-semibold">Tổng tiền:</span>
+              <div className="w-fit ml-auto text-blue-500 font-semibold">
+                {orderMenu
+                  .reduce((total, item) => total + item.price * item.quantity, 0)
+                  ?.toLocaleString()}{" "}
+                VND
+              </div>
+            </div>
+            {orderMenu.length > 0 ? (
+              <div className="text-center mt-1">
+                <p className="capitalize">
+                  (
+                  {numberToWords(
+                    orderMenu.reduce((total, item) => total + item.price * item.quantity, 0)
+                  )}
+                  )
+                </p>
+              </div>
+            ) : null}
+          </div>
+          <div className="mt-6">
+            Trân trọng cảm ơn quý khách
+          </div>
+        </div>}
         <button
-          onClick={handleCheckout}
+          onClick={hanelCheckout}
           disabled={orderMenu.length === 0}
           className={cn(
-            "fixed bottom-[54px] right-0 w-[400px] bg-blue-500 text-[20px] font-semibold cursor-pointer text-white p-4",
+            "fixed bottom-[54px] right-0 w-[600px] bg-blue-500 text-[20px] font-semibold cursor-pointer text-white p-4",
             orderMenu.length === 0 && "bg-gray-400"
           )}
         >
-          {order?._id ? "Thanh toán" : "Xác nhận"}
+          {order?._id && !areArraysNotEqual
+            ? "Thanh toán"
+            : "Xác nhận"}
         </button>
         <button
-          className="absolute right-4 top-[68px] text-xs font-semibold"
+          className="absolute right-4 top-0 text-xs font-semibold"
           onClick={() =>
             speakText(
               numberToWords(
