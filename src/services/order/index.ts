@@ -128,6 +128,25 @@ const OrderService = {
       return OrderService.handleError(error);
     }
   },
+  deleteItem: async (
+    orderId: string,
+    itemId: string
+  ): Promise<ApiResponse<{ success: boolean }> | ApiError> => {
+    try {
+      const { data } = await axiosInstance.delete<ApiResponse<{ success: boolean }>>(
+        `/${OrderService.nameApi}/delete-done-items`,
+        {
+          params: {
+            orderId,
+            itemId,
+          },
+        }
+      );
+      return data;
+    } catch (error: any) {
+      return OrderService.handleError(error);
+    }
+  },
 };
 
 export default OrderService;

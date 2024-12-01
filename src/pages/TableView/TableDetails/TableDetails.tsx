@@ -1,7 +1,7 @@
 import useAsync from "hooks/useAsync";
-import html2canvas from 'html2canvas-pro';
+import html2canvas from "html2canvas-pro";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CategoryService from "services/catergory";
 import { TCategoryResponse } from "services/catergory/types";
 import MenuService from "services/menu";
@@ -19,9 +19,13 @@ import CheckoutService from "services/checkout";
 import PlusIcon from "assets/icons/PlusIcon";
 import MinusIcon from "assets/icons/MinusIcon";
 import _ from "lodash";
+import { io, Socket } from "socket.io-client";
+import { playNotiSound } from "utils";
 
 const TableDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  let socket: Socket;
   const getAllCategoryAPI = useAsync<ApiResponse<TCategoryResponse[]>>(
     CategoryService.getAllCategories
   );
@@ -40,7 +44,7 @@ const TableDetails = () => {
   const [selectedCategory, setSelectedCategory] = useState<TCategoryResponse>();
   const [menu, setMenu] = useState<TMenuResponse[]>([]);
   const [orderMenu, setOrderMenu] = useState<TMenuResponse[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState< "CASH" | "NONE" | "CREDIT_CARD">("CASH");
+  const [paymentMethod, setPaymentMethod] = useState<"CASH" | "NONE" | "CREDIT_CARD">("CASH");
   const receiptRef = useRef(null);
 
   const getAllCategory = async () => {
@@ -128,7 +132,7 @@ const TableDetails = () => {
         {
           ...m,
           quantity: 1,
-          status: "NEW"
+          status: "NEW",
         },
       ];
     });
@@ -154,14 +158,15 @@ const TableDetails = () => {
         if (response?.data) {
           setOrder(undefined);
           setOrderMenu([]);
-          downloadReceipt()
+          downloadReceipt();
+          navigate("/table-view");
           return message.success("Thanh toán thành công");
         }
         message.error("Đã xảy ra lỗi");
       }
     }
   };
-console.log(paymentMethod)
+
   useEffect(() => {
     if (!id) return;
     getAllCategory();
@@ -169,24 +174,46 @@ console.log(paymentMethod)
     getOrderByTableId(id);
   }, [id]);
 
-  const areArraysNotEqual = 
-  orderMenu.length !== getOrderByTableIdAPI?.value?.data?.items.length || 
-  !orderMenu.every((item, index) => 
-    _.isEqual(item, getOrderByTableIdAPI?.value?.data?.items[index])
-  );
+  const areArraysNotEqual =
+    orderMenu.length !== getOrderByTableIdAPI?.value?.data?.items.length ||
+    !orderMenu.every((item, index) =>
+      _.isEqual(item, getOrderByTableIdAPI?.value?.data?.items[index])
+    );
 
   const downloadReceipt = () => {
     if (receiptRef.current) {
-      console.log("object")
-      html2canvas(receiptRef.current).then(canvas => {
+      console.log("object");
+      html2canvas(receiptRef.current).then((canvas) => {
         const dataUrl = canvas.toDataURL("image/png");
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = dataUrl;
-        link.download = 'receipt.png';
+        link.download = "receipt.png";
         link.click();
       });
     }
   };
+
+  useEffect(() => {
+    socket = io(import.meta.env.VITE_REACT_APP_URL);
+
+    socket.on("connected", (data: string) => {
+      console.log("Connected:", data);
+    });
+
+    socket.on("itemInProgress", () => {
+      getOrderByTableId(id as string);
+    });
+
+    socket.on("itemCompleted", (data: { message: string }) => {
+      getOrderByTableId(id as string);
+      playNotiSound();
+      message.success(`Ra lấy món ${data?.message}`);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <Spin spinning={checkoutAPI.loading || createOrderAPI.loading || getAllCategoryAPI.loading}>
@@ -231,135 +258,137 @@ console.log(paymentMethod)
           )}
         </div>
         <div className="w-[2px] absolute right-[600px] min-h-[90vh] z-0 bg-gray-700"></div>
-        {!checkoutAPI.loading && <div className="w-[568px] max-h-[500px] m-4">
-          <div className="text-center">UseMe App</div>
-          <div className="text-center text-lg font-semibold">
-            Đơn hàng của bàn {table?.tableNumber}
-          </div>
-          <div className="mt-4 ml-4">
-            {orderMenu?.map((m) => {
-              return (
-                <div key={m._id} className="mt-2">
-                  <div className="flex items-center">
-                    <span>{`${m.quantity}x`}</span>
-                    <div className="ml-4">{m.name}</div>
-                    <div className="w-fit ml-auto text-blue-500 font-medium">
-                      {(m.quantity * m.price)?.toLocaleString()} VND
-                    </div>
-                    <div onClick={() => handleIncreaItem(m._id)}>
-                      <PlusIcon height="28px" />
-                    </div>
-                    {m.status === "NEW" && (
-                      <div onClick={() => handleDecreaItem(m._id)}>
-                        <MinusIcon height="28px" />
+        {!checkoutAPI.loading && (
+          <div className="w-[568px] max-h-[500px] m-4">
+            <div className="text-center">UseMe App</div>
+            <div className="text-center text-lg font-semibold">
+              Đơn hàng của bàn {table?.tableNumber}
+            </div>
+            <div className="mt-4 ml-4">
+              {orderMenu?.map((m) => {
+                return (
+                  <div key={m._id} className="mt-2">
+                    <div className="flex items-center">
+                      <span>{`${m.quantity}x`}</span>
+                      <div className="ml-4">{m.name}</div>
+                      <div className="w-fit ml-auto text-blue-500 font-medium">
+                        {(m.quantity * m.price)?.toLocaleString()} VND
                       </div>
+                      <div onClick={() => handleIncreaItem(m._id)}>
+                        <PlusIcon height="28px" />
+                      </div>
+                      {m.status === "NEW" && (
+                        <div onClick={() => handleDecreaItem(m._id)}>
+                          <MinusIcon height="28px" />
+                        </div>
+                      )}
+                      <div>
+                        {m.status === "NEW"
+                          ? "Mới"
+                          : m.status === "INPROGRESS"
+                            ? "Đang nấu"
+                            : "Thành món"}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {order?._id && (
+              <div className="m-4 fixed bottom-[120px]">
+                <Checkbox
+                  className="!mr-4"
+                  onChange={() => setPaymentMethod("CASH")}
+                  checked={paymentMethod === "CASH"}
+                >
+                  <span className="text-lg">Tiền mặt</span>
+                </Checkbox>
+                <Checkbox
+                  className="!mr-4"
+                  onChange={() => setPaymentMethod("CREDIT_CARD")}
+                  checked={paymentMethod === "CREDIT_CARD"}
+                >
+                  <span className="text-lg">Thẻ</span>
+                </Checkbox>
+                <Checkbox
+                  className="!mr-4"
+                  onChange={() => setPaymentMethod("NONE")}
+                  checked={paymentMethod === "NONE"}
+                >
+                  <span className="text-lg">Khác</span>
+                </Checkbox>
+              </div>
+            )}
+            <div className="mt-4 ml-4">
+              <div className="flex">
+                <span className="font-semibold">Tổng tiền:</span>
+                <div className="w-fit ml-auto text-blue-500 font-semibold">
+                  {orderMenu
+                    .reduce((total, item) => total + item.price * item.quantity, 0)
+                    ?.toLocaleString()}{" "}
+                  VND
+                </div>
+              </div>
+              {orderMenu.length > 0 ? (
+                <div className="text-center mt-1">
+                  <p className="capitalize">
+                    (
+                    {numberToWords(
+                      orderMenu.reduce((total, item) => total + item.price * item.quantity, 0)
                     )}
-                    <div>
-                      {m.status === "NEW"
-                        ? "Mới"
-                        : m.status === "INPROGRESS"
-                          ? "Đang nấu"
-                          : "Thành món"}
+                    )
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        )}
+        {checkoutAPI.loading && (
+          <div ref={receiptRef} className="w-[568px] max-h-[500px] m-4 px-4 py-8">
+            <div className="text-center">UseMe App</div>
+            <div className="text-center text-lg font-semibold">
+              Hoá đơn thanh toán của bàn {table?.tableNumber}
+            </div>
+            <div className="mt-4 ml-4">
+              {orderMenu?.map((m) => {
+                return (
+                  <div key={m._id} className="mt-2">
+                    <div className="flex items-center">
+                      <span>{`${m.quantity}x`}</span>
+                      <div className="ml-4">{m.name}</div>
+                      <div className="w-fit ml-auto text-blue-500 font-medium">
+                        {(m.quantity * m.price)?.toLocaleString()} VND
+                      </div>
                     </div>
                   </div>
+                );
+              })}
+            </div>
+            <div className="mt-4 ml-4">
+              <div className="flex">
+                <span className="font-semibold">Tổng tiền:</span>
+                <div className="w-fit ml-auto text-blue-500 font-semibold">
+                  {orderMenu
+                    .reduce((total, item) => total + item.price * item.quantity, 0)
+                    ?.toLocaleString()}{" "}
+                  VND
                 </div>
-              );
-            })}
-          </div>
-          {order?._id && (
-            <div className="m-4 fixed bottom-[120px]">
-              <Checkbox
-                className="!mr-4"
-                onChange={() => setPaymentMethod("CASH")}
-                checked={paymentMethod === "CASH"}
-              >
-                <span className="text-lg">Tiền mặt</span>
-              </Checkbox>
-              <Checkbox
-                className="!mr-4"
-                onChange={() => setPaymentMethod("CREDIT_CARD")}
-                checked={paymentMethod === "CREDIT_CARD"}
-              >
-                <span className="text-lg">Thẻ</span>
-              </Checkbox>
-              <Checkbox
-                className="!mr-4"
-                onChange={() => setPaymentMethod("NONE")}
-                checked={paymentMethod === "NONE"}
-              >
-                <span className="text-lg">Khác</span>
-              </Checkbox>
-            </div>
-          )}
-          <div className="mt-4 ml-4">
-            <div className="flex">
-              <span className="font-semibold">Tổng tiền:</span>
-              <div className="w-fit ml-auto text-blue-500 font-semibold">
-                {orderMenu
-                  .reduce((total, item) => total + item.price * item.quantity, 0)
-                  ?.toLocaleString()}{" "}
-                VND
               </div>
-            </div>
-            {orderMenu.length > 0 ? (
-              <div className="text-center mt-1">
-                <p className="capitalize">
-                  (
-                  {numberToWords(
-                    orderMenu.reduce((total, item) => total + item.price * item.quantity, 0)
-                  )}
-                  )
-                </p>
-              </div>
-            ) : null}
-          </div>
-        </div>}
-        {checkoutAPI.loading &&<div ref={receiptRef} className="w-[568px] max-h-[500px] m-4 px-4 py-8">
-          <div className="text-center">UseMe App</div>
-          <div className="text-center text-lg font-semibold">
-            Hoá đơn thanh toán của bàn {table?.tableNumber}
-          </div>
-          <div className="mt-4 ml-4">
-            {orderMenu?.map((m) => {
-              return (
-                <div key={m._id} className="mt-2">
-                  <div className="flex items-center">
-                    <span>{`${m.quantity}x`}</span>
-                    <div className="ml-4">{m.name}</div>
-                    <div className="w-fit ml-auto text-blue-500 font-medium">
-                      {(m.quantity * m.price)?.toLocaleString()} VND
-                    </div>
-                  </div>
+              {orderMenu.length > 0 ? (
+                <div className="text-center mt-1">
+                  <p className="capitalize">
+                    (
+                    {numberToWords(
+                      orderMenu.reduce((total, item) => total + item.price * item.quantity, 0)
+                    )}
+                    )
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-          <div className="mt-4 ml-4">
-            <div className="flex">
-              <span className="font-semibold">Tổng tiền:</span>
-              <div className="w-fit ml-auto text-blue-500 font-semibold">
-                {orderMenu
-                  .reduce((total, item) => total + item.price * item.quantity, 0)
-                  ?.toLocaleString()}{" "}
-                VND
-              </div>
+              ) : null}
             </div>
-            {orderMenu.length > 0 ? (
-              <div className="text-center mt-1">
-                <p className="capitalize">
-                  (
-                  {numberToWords(
-                    orderMenu.reduce((total, item) => total + item.price * item.quantity, 0)
-                  )}
-                  )
-                </p>
-              </div>
-            ) : null}
+            <div className="mt-6">Trân trọng cảm ơn quý khách</div>
           </div>
-          <div className="mt-6">
-            Trân trọng cảm ơn quý khách
-          </div>
-        </div>}
+        )}
         <button
           onClick={hanelCheckout}
           disabled={orderMenu.length === 0}
@@ -368,9 +397,7 @@ console.log(paymentMethod)
             orderMenu.length === 0 && "bg-gray-400"
           )}
         >
-          {order?._id && !areArraysNotEqual
-            ? "Thanh toán"
-            : "Xác nhận"}
+          {order?._id && !areArraysNotEqual ? "Thanh toán" : "Xác nhận"}
         </button>
         <button
           className="absolute right-4 top-0 text-xs font-semibold"

@@ -12,6 +12,13 @@ const MENU_ADMIN = [
     role: "Merchant Waiter",
   },
   {
+    id: 7,
+    title: "N",
+    name: "Nhà Bếp",
+    path: "/kitchen",
+    role: "Merchant Kitchen",
+  },
+  {
     id: 3,
     title: "R",
     name: "Danh mục",

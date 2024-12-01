@@ -45,7 +45,7 @@ const ROUTES: IRoute[] = [
       {
         id: "acbdfdaa-e864-4e00-8157-bb29b40f208d",
         path: "/",
-        element: <Report />,
+        element: <TableView />,
       },
       {
         id: "acbdfdaa-e864-4e00-8157-Table",
@@ -86,6 +86,11 @@ const ROUTES: IRoute[] = [
         id: "acbdfdaa-e864-4e00-8157-details",
         path: "table-details/:id",
         element: <TableDetails />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-details",
+        path: "report",
+        element: <Report />,
       },
     ],
   },
