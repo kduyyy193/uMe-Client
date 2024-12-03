@@ -14,6 +14,8 @@ const Menu = lazy(() => import("pages/Category/Menu"));
 const Order = lazy(() => import("pages/Receipt"));
 const Kitchen = lazy(() => import("pages/Kitchen"));
 const Receipt = lazy(() => import("pages/Receipt"));
+const Ingredient = lazy(() => import("pages/Ingredient"));
+const History = lazy(() => import("pages/History"));
 const TableDetails = lazy(() => import("pages/TableView/TableDetails"));
 
 interface IRoute {
@@ -42,11 +44,6 @@ const ROUTES: IRoute[] = [
     path: "/",
     element: <DefaultLayout />,
     children: [
-      {
-        id: "acbdfdaa-e864-4e00-8157-bb29b40f208d",
-        path: "/",
-        element: <TableView />,
-      },
       {
         id: "acbdfdaa-e864-4e00-8157-Table",
         path: "table-view",
@@ -81,6 +78,16 @@ const ROUTES: IRoute[] = [
         id: "acbdfdaa-e864-4e00-8157-Order",
         path: "order/:id",
         element: <Order />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-history",
+        path: "history",
+        element: <History />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-ingredient",
+        path: "ingredient",
+        element: <Ingredient />,
       },
       {
         id: "acbdfdaa-e864-4e00-8157-details",

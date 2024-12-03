@@ -85,6 +85,18 @@ const Report = () => {
             {report?.nonTakeawayReport?.[0]?.totalAmount?.toLocaleString() || 0} VND
           </span>
         </div>
+        <div className="text-lg font-medium mb-2">
+          Tổng tiền nhập kho:{" "}
+          <span className="text-blue-500 ml-1">
+            {report?.totalCostIn?.toLocaleString() || 0} VND
+          </span>
+        </div>
+        <div className="text-lg font-medium mb-2">
+          Tổng tiền xuất kho:{" "}
+          <span className="text-blue-500 ml-1">
+            {report?.totalCostOut?.toLocaleString() || 0} VND
+          </span>
+        </div>
         <div className="mt-4 h-[2px] bg-gray-500 w-full" />
         <div className="flex flex-wrap gap-10 mt-4">
           <div className="h-fit my-4 w-[50%]">

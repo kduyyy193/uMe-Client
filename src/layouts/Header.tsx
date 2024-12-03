@@ -23,7 +23,7 @@ const Header = ({ closeDrawer, openDrawer, openDrawerMenu }: IHeader) => {
       onClick: () => {
         logout();
       },
-      label: <p className="py-1 px-2 text-3.75 leading-4.25 font-medium">Sign Out</p>,
+      label: <p className="py-1 px-2 text-3.75 leading-4.25 font-medium">Đăng xuất</p>,
     },
   ];
 

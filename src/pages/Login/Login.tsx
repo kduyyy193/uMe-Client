@@ -49,7 +49,7 @@ const Login = () => {
         setUser(response.data.user);
         setToken(response.data?.token);
         localStorage.setItem(KEY_TOKEN, response.data?.token);
-        navigate("/");
+        navigate("/table-view");
         return;
       }
       message.error("Incorrect email or password!");

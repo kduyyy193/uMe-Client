@@ -40,10 +40,24 @@ const MENU_ADMIN = [
     role: "Merchant",
   },
   {
+    id: 8,
+    title: "R",
+    name: "Nguyên liệu",
+    path: "/ingredient",
+    role: "Merchant",
+  },
+  {
+    id: 9,
+    title: "R",
+    name: "Lịch sử",
+    path: "/history",
+    role: "Merchant",
+  },
+  {
     id: 1,
     title: "R",
     name: "Báo cáo",
-    path: "/",
+    path: "/report",
     role: "Merchant",
   },
 ];

@@ -24,6 +24,8 @@ export type TTakeawayReport = {
 
 export type TReportResponse = {
   totalRevenue: number;
+  totalCostIn: number;
+  totalCostOut: number;
   report: TReportItem[];
   topMenuItems: TTopMenuItem[];
   paymentMethodReport: TPaymentMethodReport[];
