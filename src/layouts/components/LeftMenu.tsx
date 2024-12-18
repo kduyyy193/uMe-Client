@@ -49,7 +49,7 @@ const MENU_ADMIN = [
   {
     id: 9,
     title: "R",
-    name: "Lịch sử",
+    name: "Lịch sử xuất nguyên liệu",
     path: "/history",
     role: "Merchant",
   },

@@ -18,7 +18,7 @@ import { Checkbox, message, Spin } from "antd";
 import CheckoutService from "services/checkout";
 import PlusIcon from "assets/icons/PlusIcon";
 import MinusIcon from "assets/icons/MinusIcon";
-import _ from "lodash";
+import _, { uniqueId } from "lodash";
 import { io, Socket } from "socket.io-client";
 import { playNotiSound } from "utils";
 
@@ -121,12 +121,18 @@ const TableDetails = () => {
 
   const handleSelectMenu = (m: TMenuResponse) => {
     setOrderMenu((prev) => {
-      const existedItem = prev.find((value) => value._id === m._id);
-      if (existedItem) {
-        return prev.map((item) =>
-          item._id === m._id ? { ...item, quantity: item.quantity + 1 } : item
+      console.log(prev)
+      const existedItem = prev.find((value) => value._id === m._id && value.status === 'NEW');
+      console.log(existedItem);
+
+      if (existedItem && existedItem.status === 'NEW') {
+        return prev.map((item) => {
+          console.log(item)
+          return item._id === m._id && item.status === 'NEW' ? { ...item, quantity: item.quantity + 1, status: item.status } : item
+        }
         );
       }
+
       return [
         ...prev,
         {
@@ -137,6 +143,7 @@ const TableDetails = () => {
       ];
     });
   };
+  console.log(orderMenu)
   const hanelCheckout = async () => {
     if (!order?._id) {
       const response = await createOrderAPI.run(id, orderMenu, table?.isTakeaway);
@@ -147,6 +154,7 @@ const TableDetails = () => {
       message.error("Đã xảy ra lỗi");
     } else {
       if (areArraysNotEqual) {
+        console.log(orderMenu)
         const response = await updateOrderAPI.run(order._id, orderMenu, table?.isTakeaway);
         if (response?.data) {
           getOrderByTableId(id as string);
@@ -267,22 +275,24 @@ const TableDetails = () => {
             <div className="mt-4 ml-4">
               {orderMenu?.map((m) => {
                 return (
-                  <div key={m._id} className="mt-2">
+                  <div key={uniqueId()} className="mt-2">
                     <div className="flex items-center">
                       <span>{`${m.quantity}x`}</span>
                       <div className="ml-4">{m.name}</div>
                       <div className="w-fit ml-auto text-blue-500 font-medium">
                         {(m.quantity * m.price)?.toLocaleString()} VND
                       </div>
-                      <div onClick={() => handleIncreaItem(m._id)}>
-                        <PlusIcon height="28px" />
-                      </div>
+                      {m.status === "NEW" && (
+                        <div onClick={() => handleIncreaItem(m._id)}>
+                          <PlusIcon height="28px" />
+                        </div>
+                      )}
                       {m.status === "NEW" && (
                         <div onClick={() => handleDecreaItem(m._id)}>
                           <MinusIcon height="28px" />
                         </div>
                       )}
-                      <div>
+                      <div className="ml-2">
                         {m.status === "NEW"
                           ? "Mới"
                           : m.status === "INPROGRESS"

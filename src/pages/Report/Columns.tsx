@@ -21,7 +21,7 @@ export const ColumnsMenu = (): TableColumnsType<TopMenuItem> => {
       render: (value: number) => value,
     },
     {
-      title: "Tổng thu nhập",
+      title: "Tổng doanh thu",
       dataIndex: "totalRevenue",
       key: "totalRevenue",
       render: (value: number) => `${value.toLocaleString()} VND`,

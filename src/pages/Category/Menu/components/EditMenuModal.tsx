@@ -36,7 +36,7 @@ const EditMenuModal = (props: PropsType) => {
       {open ? (
         <Modal
           centered
-          title={"Chỉnh sửa category"}
+          title={"Chỉnh sửa món"}
           onOk={handleSubmit}
           onCancel={handleClose}
           okText="Save"
@@ -67,9 +67,9 @@ const FormItems = (): ItemForm[] => {
   return [
     {
       name: "name",
-      label: "Menu",
+      label: "Tên món",
       rules: [{ required: true }],
-      field: <Input placeholder="Menu" />,
+      field: <Input placeholder="Tên món" />,
       style: {
         width: "100%",
       },

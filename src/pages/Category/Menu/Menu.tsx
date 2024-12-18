@@ -40,7 +40,7 @@ const Menu = () => {
     const response = await addNewMenuAPI.run(id, values);
     if (response?.data) {
       getAllMenu();
-      message.success("Thêm mới menu thành công");
+      message.success("Thêm mới món thành công");
       handleClose();
     } else {
       message.error("Đã xảy ra lỗi");
@@ -53,7 +53,7 @@ const Menu = () => {
     if (response?.data) {
       getAllMenu();
       handleClose();
-      return message.success("Chỉnh sửa menu thành công");
+      return message.success("Chỉnh sửa món thành công");
     }
     message.error("Đã xảy ra lỗi");
   };
@@ -64,7 +64,7 @@ const Menu = () => {
     if (response?.data?.success) {
       getAllMenu();
       handleClose();
-      return message.success("Xoá menu thành công");
+      return message.success("Xoá món thành công");
     }
     message.error("Đã xảy ra lỗi");
   };

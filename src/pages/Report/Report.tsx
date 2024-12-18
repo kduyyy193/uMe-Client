@@ -68,31 +68,31 @@ const Report = () => {
           />
         </div>
         <div className="text-xl font-medium mb-4">
-          Tổng thu nhập:{" "}
+          Tổng doanh thu:{" "}
           <span className="text-blue-500 ml-1">
             {report?.totalRevenue?.toLocaleString() || 0} VND
           </span>
         </div>
         <div className="text-lg font-medium mb-2">
-          Thu nhập bán mang đi:{" "}
+          Doanh thu bán mang đi:{" "}
           <span className="text-blue-500 ml-1">
             {report?.takeawayReport?.[0]?.totalAmount?.toLocaleString() || 0} VND
           </span>
         </div>
         <div className="text-lg font-medium mb-2">
-          Thu nhập bán tại bàn:{" "}
+          Doanh thu bán tại bàn:{" "}
           <span className="text-blue-500 ml-1">
             {report?.nonTakeawayReport?.[0]?.totalAmount?.toLocaleString() || 0} VND
           </span>
         </div>
         <div className="text-lg font-medium mb-2">
-          Tổng tiền nhập kho:{" "}
+          Tổng chi phí nhập kho:{" "}
           <span className="text-blue-500 ml-1">
             {report?.totalCostIn?.toLocaleString() || 0} VND
           </span>
         </div>
         <div className="text-lg font-medium mb-2">
-          Tổng tiền xuất kho:{" "}
+          Tổng chi phí xuất kho:{" "}
           <span className="text-blue-500 ml-1">
             {report?.totalCostOut?.toLocaleString() || 0} VND
           </span>

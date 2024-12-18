@@ -35,7 +35,7 @@ const AddMenuModal = (props: PropsType) => {
       {open ? (
         <Modal
           centered
-          title={"Tạo mới menu"}
+          title={"Tạo mới món"}
           onOk={handleSubmit}
           onCancel={handleClose}
           okText="Save"
@@ -65,9 +65,9 @@ const FormItems = (): ItemForm[] => {
   return [
     {
       name: "name",
-      label: "Menu",
+      label: "Tên món",
       rules: [{ required: true }],
-      field: <Input placeholder="Menu" />,
+      field: <Input placeholder="Món" />,
       style: {
         width: "100%",
       },

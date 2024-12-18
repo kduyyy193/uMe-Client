@@ -60,7 +60,7 @@ const InventoryHistory = () => {
     const response = await inHistoryAPI.run(values);
     if (response?.data) {
       getAllHistory();
-      return message.success("Thêm mới lịch sử xuất kho thành công");
+      return message.success("Thêm mới lịch sử nhập kho thành công");
     }
     message.error("Đã xảy ra lỗi");
   };
@@ -82,7 +82,7 @@ const InventoryHistory = () => {
   return (
     <Spin spinning={getAllHistoryAPI.loading || outHistoryAPI.loading}>
       <div className="m-4">
-        <h2 className="font-semibold text-lg">Lịch sử nhập/xuất nguyên liệu</h2>
+        <h2 className="font-semibold text-lg">Lịch sử xuất nguyên liệu</h2>
         <div className="mb-4 w-fit ml-auto">
           <RangePicker
             onChange={(values) => {

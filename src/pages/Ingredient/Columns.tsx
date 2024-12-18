@@ -54,7 +54,7 @@ const Columns = ({
       render: (value) => <div>{value?.toLocaleString()} VND</div>,
     },
     {
-      title: "Thời gian",
+      title: "Thời gian nhập",
       dataIndex: "createdAt",
       key: "createdAt",
       width: 100,
