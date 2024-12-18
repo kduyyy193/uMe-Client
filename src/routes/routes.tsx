@@ -16,6 +16,7 @@ const Kitchen = lazy(() => import("pages/Kitchen"));
 const Receipt = lazy(() => import("pages/Receipt"));
 const Ingredient = lazy(() => import("pages/Ingredient"));
 const History = lazy(() => import("pages/History"));
+const User = lazy(() => import("pages/User"));
 const TableDetails = lazy(() => import("pages/TableView/TableDetails"));
 
 interface IRoute {
@@ -95,9 +96,14 @@ const ROUTES: IRoute[] = [
         element: <TableDetails />,
       },
       {
-        id: "acbdfdaa-e864-4e00-8157-details",
+        id: "acbdfdaa-e864-4e00-8157-dsssetails",
         path: "report",
         element: <Report />,
+      },
+      {
+        id: "acbdfdaa-e864-4e00-8157-user",
+        path: "user",
+        element: <User />,
       },
     ],
   },

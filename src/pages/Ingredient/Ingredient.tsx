@@ -31,8 +31,11 @@ const Ingredient = () => {
   const [ingredient, setIngredient] = useState<TIngredientResponse[]>([]);
   const [selectedItem, setSelectedItem] = useState<TIngredientResponse>();
 
-  const getAllIngredient = async () => {
-    const response = await getAllIngredientAPI.run();
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const getAllIngredient = async (page: number, pageSize: number) => {
+    const response = await getAllIngredientAPI.run(page, pageSize);
     if (response?.data) {
       const ingredientAddedKey = response?.data.map((d, idx) => ({ ...d, key: idx + 1 }));
       setIngredient(ingredientAddedKey || []);
@@ -42,7 +45,7 @@ const Ingredient = () => {
   const handleAddIngredient = async (values: TIngredientRequest) => {
     const response = await addNewIngredientAPI.run(values);
     if (response?.data) {
-      getAllIngredient();
+      getAllIngredient(currentPage, pageSize); // Gọi lại API khi thêm mới nguyên liệu
       return message.success("Thêm mới nguyên liệu thành công");
     }
     message.error("Đã xảy ra lỗi");
@@ -51,7 +54,7 @@ const Ingredient = () => {
   const handleEditIngredient = async (values: TIngredientRequest) => {
     const response = await editIngredientAPI.run(selectedItem?._id, values);
     if (response?.data) {
-      getAllIngredient();
+      getAllIngredient(currentPage, pageSize); // Gọi lại API khi chỉnh sửa nguyên liệu
       return message.success("Chỉnh sửa nguyên liệu thành công");
     }
     message.error("Đã xảy ra lỗi");
@@ -61,7 +64,7 @@ const Ingredient = () => {
     if (!id) return;
     const response = await deleteIngredientAPI.run(id);
     if (response?.data) {
-      getAllIngredient();
+      getAllIngredient(currentPage, pageSize); // Gọi lại API khi xoá nguyên liệu
       return message.success("Xoá nguyên liệu thành công");
     }
     message.error("Đã xảy ra lỗi");
@@ -71,9 +74,19 @@ const Ingredient = () => {
     setSelectedItem(value);
   };
 
+  const handleChangePage = (page: number) => {
+    setCurrentPage(page);
+    getAllIngredient(page, pageSize);
+  };
+
+  const handleChangePerPage = (perPage: number) => {
+    setPageSize(perPage);
+    getAllIngredient(currentPage, perPage);
+  };
+
   useEffect(() => {
-    getAllIngredient();
-  }, []);
+    getAllIngredient(currentPage, pageSize);
+  }, [currentPage, pageSize]);
 
   return (
     <Spin
@@ -99,10 +112,12 @@ const Ingredient = () => {
             onClickEdit: () => handleOpen("edit"),
             handleSelectItem,
           })}
-          count={0}
           data={ingredient}
-          page={1}
-          rowPerPage={10}
+          count={getAllIngredientAPI.value?.pageInfo?.count || 0}
+          page={currentPage - 1}
+          rowPerPage={pageSize}
+          onPageChange={handleChangePage}
+          onPerPageChange={handleChangePerPage}
         />
         {open === "add" && (
           <AddIngredientModal

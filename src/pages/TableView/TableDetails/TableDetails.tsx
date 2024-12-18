@@ -1,6 +1,6 @@
 import useAsync from "hooks/useAsync";
 import html2canvas from "html2canvas-pro";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoryService from "services/catergory";
 import { TCategoryResponse } from "services/catergory/types";
@@ -14,13 +14,15 @@ import { numberToWords, speakText } from "utils/numberToWords";
 import soundImg from "assets/images/sound.jpg";
 import OrderService from "services/order";
 import { TOrderResponse } from "services/order/types";
-import { Checkbox, message, Spin } from "antd";
+import { Checkbox, Col, Input, message, Row, Spin } from "antd";
 import CheckoutService from "services/checkout";
 import PlusIcon from "assets/icons/PlusIcon";
 import MinusIcon from "assets/icons/MinusIcon";
-import _, { uniqueId } from "lodash";
+import _, { debounce, uniqueId } from "lodash";
 import { io, Socket } from "socket.io-client";
 import { playNotiSound } from "utils";
+
+const { Search } = Input;
 
 const TableDetails = () => {
   const { id } = useParams();
@@ -36,6 +38,7 @@ const TableDetails = () => {
   const getOrderByTableIdAPI = useAsync<ApiResponse<TOrderResponse>>(
     OrderService.getOrderByTableId
   );
+  const searchMenuAPI = useAsync<ApiResponse<TMenuResponse[]>>(MenuService.searchMenus);
   const checkoutAPI = useAsync<ApiResponse<TOrderResponse>>(CheckoutService.checkoutOrder);
 
   const [order, setOrder] = useState<TOrderResponse>();
@@ -121,16 +124,13 @@ const TableDetails = () => {
 
   const handleSelectMenu = (m: TMenuResponse) => {
     setOrderMenu((prev) => {
-      console.log(prev)
-      const existedItem = prev.find((value) => value._id === m._id && value.status === 'NEW');
-      console.log(existedItem);
-
-      if (existedItem && existedItem.status === 'NEW') {
+      const existedItem = prev.find((value) => value._id === m._id && value.status === "NEW");
+      if (existedItem && existedItem.status === "NEW") {
         return prev.map((item) => {
-          console.log(item)
-          return item._id === m._id && item.status === 'NEW' ? { ...item, quantity: item.quantity + 1, status: item.status } : item
-        }
-        );
+          return item._id === m._id && item.status === "NEW"
+            ? { ...item, quantity: item.quantity + 1, status: item.status }
+            : item;
+        });
       }
 
       return [
@@ -143,7 +143,6 @@ const TableDetails = () => {
       ];
     });
   };
-  console.log(orderMenu)
   const hanelCheckout = async () => {
     if (!order?._id) {
       const response = await createOrderAPI.run(id, orderMenu, table?.isTakeaway);
@@ -154,7 +153,6 @@ const TableDetails = () => {
       message.error("Đã xảy ra lỗi");
     } else {
       if (areArraysNotEqual) {
-        console.log(orderMenu)
         const response = await updateOrderAPI.run(order._id, orderMenu, table?.isTakeaway);
         if (response?.data) {
           getOrderByTableId(id as string);
@@ -174,6 +172,22 @@ const TableDetails = () => {
       }
     }
   };
+  const [searchText, setSearchText] = useState<string>("");
+
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      const response = await searchMenuAPI.run(query, 1, 10);
+      if (response?.data) {
+        setMenu(response.data);
+      }
+    }, 500),
+    []
+  );
+
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+    debouncedSearch(value);
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -190,7 +204,6 @@ const TableDetails = () => {
 
   const downloadReceipt = () => {
     if (receiptRef.current) {
-      console.log("object");
       html2canvas(receiptRef.current).then((canvas) => {
         const dataUrl = canvas.toDataURL("image/png");
         const link = document.createElement("a");
@@ -227,7 +240,20 @@ const TableDetails = () => {
     <Spin spinning={checkoutAPI.loading || createOrderAPI.loading || getAllCategoryAPI.loading}>
       <div className="m-4 flex">
         <div className="grow mr-4 max-w-[calc(100%-600px)]">
-          <div className="mt-4 font-semibold">Chọn danh mục</div>
+          <div className="flex items-center w-full mb-4">
+            <div className="mt-4 font-semibold">Chọn danh mục</div>
+            <Row justify="center" style={{ marginLeft: "auto" }}>
+              <Col>
+                <Search
+                  placeholder="Tìm món ăn..."
+                  enterButton="Tìm"
+                  size="large"
+                  value={searchText}
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </Col>
+            </Row>
+          </div>
           <div className="flex gap-4 flex-wrap mt-4 pb-4">
             {category.map((c) => {
               return (

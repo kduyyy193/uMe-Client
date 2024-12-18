@@ -1,11 +1,10 @@
-type IUser = {
-  id?: string | null;
-  name?: string;
-  email?: string;
+export type IUser = {
+  _id?: string | null;
   username?: string;
   password?: string;
-  password_confirmation?: string;
-  created_at?: string;
+  role?: "Merchant" | "Waiter" | "Kitchen" | "Customer";
+  businessName?: string | null;
+  location?: string | null;
+  isDeleted?: boolean;
+  createdAt?: string;
 };
-
-export type { IUser };

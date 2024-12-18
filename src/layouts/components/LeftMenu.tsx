@@ -60,6 +60,13 @@ const MENU_ADMIN = [
     path: "/report",
     role: "Merchant",
   },
+  {
+    id: 88,
+    title: "R",
+    name: "Nhân viên",
+    path: "/user",
+    role: "Merchant",
+  },
 ];
 
 const LeftMenu = () => {

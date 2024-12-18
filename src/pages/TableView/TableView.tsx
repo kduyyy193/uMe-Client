@@ -58,7 +58,7 @@ const TableView = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex items-center flex-wrap gap-20 w-auto mt-8 ml-8">
+    <div className="flex items-center flex-wrap gap-20 w-auto mt-8 ml-8 pb-16">
       {tables?.map((table) => (
         <div
           key={table._id}

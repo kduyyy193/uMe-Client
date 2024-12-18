@@ -4,6 +4,24 @@ import { TMenuRequest, TMenuResponse } from "./types";
 
 const MenuService = {
   nameApi: "menu",
+  searchMenus: async (name?: string): Promise<ApiResponse<TMenuResponse[]> | ApiError> => {
+    try {
+      const params = {
+        name,
+      };
+      console.log(params);
+      const { data } = await axiosInstance.get<ApiResponse<TMenuResponse[]>>(
+        `/${MenuService.nameApi}/search`,
+        { params }
+      );
+      return data;
+    } catch (error: any) {
+      return {
+        msg: error?.response?.data?.msg || "Lỗi khi tìm kiếm món ăn",
+        status: error?.response?.status,
+      };
+    }
+  },
   getAllMenusByCategory: async (
     categoryId: string
   ): Promise<ApiResponse<TMenuResponse[]> | ApiError> => {

@@ -4,9 +4,17 @@ import { TIngredientResponse, TIngredientRequest } from "./types";
 
 const IngredientService = {
   nameApi: "ingredients",
-  getIngredients: async (): Promise<ApiResponse<TIngredientResponse[]> | ApiError> => {
+  getIngredients: async (
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<ApiResponse<TIngredientResponse[]> | ApiError> => {
     try {
-      const { data } = await axiosInstance.get<ApiResponse<TIngredientResponse[]>>("/ingredients");
+      const { data } = await axiosInstance.get<ApiResponse<TIngredientResponse[]>>("/ingredients", {
+        params: {
+          page,
+          pageSize,
+        },
+      });
       return data;
     } catch (error: any) {
       return {
